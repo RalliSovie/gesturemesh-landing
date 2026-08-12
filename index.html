@@ -153,10 +153,10 @@
 
     .hero {
       position: relative;
-      min-height: 860px;
+      min-height: 980px;
       display: grid;
       align-items: center;
-      padding: 88px 0 70px;
+      padding: 86px 0 78px;
     }
 
     .hero::before {
@@ -176,9 +176,11 @@
     .hero-grid {
       position: relative;
       display: grid;
-      grid-template-columns: minmax(0, .98fr) minmax(460px, .9fr);
-      gap: 76px;
+      grid-template-columns: 1fr;
+      gap: 46px;
       align-items: center;
+      justify-items: center;
+      text-align: center;
     }
 
     .hero-grid > div:first-child {
@@ -235,6 +237,8 @@
 
     .lede {
       max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
       color: #385166;
       font-size: clamp(1.05rem, 1.7vw, 1.35rem);
       line-height: 1.7;
@@ -243,6 +247,7 @@
     .chips {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 10px;
       margin-top: 34px;
     }
@@ -271,10 +276,10 @@
     .mesh-stage {
       position: relative;
       z-index: 1;
-      min-height: 520px;
+      min-height: 610px;
       width: 100%;
-      max-width: 560px;
-      justify-self: end;
+      max-width: 820px;
+      justify-self: center;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
@@ -296,25 +301,79 @@
       background-size: 46px 46px;
       transform: perspective(700px) rotateX(56deg) translateY(70px) scale(1.18);
       transform-origin: bottom;
+      animation: gridDrift 8s linear infinite;
+    }
+
+    .mesh-stage::after {
+      content: "";
+      position: absolute;
+      left: -20%;
+      top: 12%;
+      width: 140%;
+      height: 22%;
+      background: linear-gradient(90deg, transparent, rgba(0, 191, 232, .16), rgba(30, 85, 255, .1), transparent);
+      transform: rotate(-8deg);
+      animation: scanSweep 5.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes gridDrift {
+      to { background-position: 46px 46px; }
+    }
+
+    @keyframes scanSweep {
+      0%, 100% { transform: translateY(-180px) rotate(-8deg); opacity: 0; }
+      18%, 70% { opacity: 1; }
+      88% { transform: translateY(420px) rotate(-8deg); opacity: 0; }
     }
 
     .gesture-demo {
       position: absolute;
-      inset: 34px 28px 128px;
+      inset: 38px 34px 138px;
       display: grid;
       place-items: center;
+      perspective: 900px;
+    }
+
+    .mesh-node {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 50%;
+      width: 9px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(0, 191, 232, .58);
+      transform: translate(-50%, -50%) translate(var(--x), var(--y));
+      animation: nodeBlink 3.2s ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    .mesh-node.n1 { --x: -118px; --y: -86px; --delay: 0s; }
+    .mesh-node.n2 { --x: 108px; --y: -108px; --delay: .35s; }
+    .mesh-node.n3 { --x: -142px; --y: 92px; --delay: .7s; }
+    .mesh-node.n4 { --x: 138px; --y: 84px; --delay: 1.05s; }
+
+    @keyframes nodeBlink {
+      0%, 100% { opacity: .24; transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(.84); }
+      50% { opacity: 1; transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(1.25); }
     }
 
     .demo-cube {
+      --cube-size: 146px;
+      --cube-half: calc(var(--cube-size) / 2);
       position: relative;
       z-index: 4;
-      width: 190px;
-      height: 190px;
+      width: var(--cube-size);
+      height: var(--cube-size);
+      transform-style: preserve-3d;
       animation: cubeFloat 4.8s ease-in-out infinite;
     }
 
     .cube-face {
       position: absolute;
+      inset: 0;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
@@ -323,6 +382,7 @@
       border: 1px solid rgba(0, 116, 170, .35);
       background: rgba(255, 255, 255, .86);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.55);
+      animation: faceGlow 3.8s ease-in-out infinite;
     }
 
     .cube-face i {
@@ -331,36 +391,18 @@
     }
 
     .cube-face.front {
-      left: 50%;
-      top: 50%;
-      width: 146px;
-      height: 146px;
-      transform: translate(-50%, -50%);
+      transform: translateZ(var(--cube-half));
       z-index: 3;
     }
 
     .cube-face.right {
-      left: calc(50% + 73px);
-      top: calc(50% - 73px);
-      width: 56px;
-      height: 146px;
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(3, 1fr);
-      transform: skewY(-35deg);
-      transform-origin: left bottom;
+      transform: rotateY(90deg) translateZ(var(--cube-half));
       z-index: 2;
       background: rgba(222, 243, 255, .86);
     }
 
     .cube-face.top {
-      left: calc(50% - 73px);
-      top: calc(50% - 129px);
-      width: 146px;
-      height: 56px;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: 1fr;
-      transform: skewX(-55deg);
-      transform-origin: right bottom;
+      transform: rotateX(90deg) translateZ(var(--cube-half));
       z-index: 1;
       background: rgba(238, 250, 255, .9);
     }
@@ -369,11 +411,22 @@
       border-color: rgba(0, 191, 232, .95);
       background: rgba(0, 191, 232, .22);
       box-shadow: 0 0 24px rgba(0, 191, 232, .38);
+      animation: cellSelect 1.8s ease-in-out infinite;
     }
 
     @keyframes cubeFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      0%, 100% { transform: translateY(0) rotateX(-24deg) rotateY(34deg); }
+      50% { transform: translateY(-10px) rotateX(-24deg) rotateY(34deg); }
+    }
+
+    @keyframes faceGlow {
+      0%, 100% { border-color: rgba(0, 116, 170, .28); }
+      50% { border-color: rgba(0, 191, 232, .62); }
+    }
+
+    @keyframes cellSelect {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 191, 232, .28); }
+      50% { transform: scale(1.12); box-shadow: 0 0 34px rgba(0, 191, 232, .5); }
     }
 
     .demo-arrow {
@@ -393,7 +446,7 @@
       font-size: 58px;
       line-height: 1;
       transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--r));
-      animation: arrowNudge 1.7s ease-in-out infinite;
+      animation: arrowNudge 1.7s ease-in-out infinite, arrowColor 5s ease-in-out infinite;
       animation-delay: var(--delay);
       filter: drop-shadow(0 10px 18px rgba(0, 191, 232, .22));
     }
@@ -403,60 +456,20 @@
       transform: translateY(-5px);
     }
 
-    .demo-arrow.up { --x: 0px; --y: -185px; --r: -90deg; --delay: 0s; }
-    .demo-arrow.right { --x: 188px; --y: -10px; --r: 0deg; --delay: .15s; }
-    .demo-arrow.down { --x: 0px; --y: 185px; --r: 90deg; --delay: .3s; }
-    .demo-arrow.left { --x: -188px; --y: -10px; --r: 180deg; --delay: .45s; }
-    .demo-arrow.diagonal { --x: 148px; --y: 150px; --r: 45deg; --delay: .6s; color: var(--orange); }
+    .demo-arrow.up { --x: 0px; --y: -208px; --r: -90deg; --delay: 0s; }
+    .demo-arrow.right { --x: 226px; --y: -18px; --r: 0deg; --delay: .15s; }
+    .demo-arrow.down { --x: 0px; --y: 208px; --r: 90deg; --delay: .3s; }
+    .demo-arrow.left { --x: -238px; --y: -18px; --r: 180deg; --delay: .45s; }
+    .demo-arrow.diagonal { --x: 178px; --y: 170px; --r: 45deg; --delay: .6s; color: var(--orange); }
 
     @keyframes arrowNudge {
       0%, 100% { margin-left: 0; opacity: .58; }
-      50% { margin-left: 18px; opacity: 1; }
+      50% { margin-left: 24px; opacity: 1; }
     }
 
-    .arrow-label {
-      position: absolute;
-      z-index: 6;
-      left: 50%;
-      top: 50%;
-      min-height: 32px;
-      display: inline-flex;
-      align-items: center;
-      padding: 0 11px;
-      border: 1px solid rgba(0, 116, 170, .18);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .92);
-      color: #183248;
-      font: 800 .62rem/1 "IBM Plex Mono", monospace;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      box-shadow: 0 12px 30px rgba(43, 92, 124, .12);
-      transform: translate(-50%, -50%) translate(var(--x), var(--y));
-    }
-
-    .arrow-label.up { --x: 0px; --y: -118px; }
-    .arrow-label.right { --x: 156px; --y: 68px; }
-    .arrow-label.down { --x: -10px; --y: 118px; }
-    .arrow-label.left { --x: -156px; --y: 68px; }
-    .arrow-label.diagonal { --x: 132px; --y: 112px; }
-
-    .value-tag {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
-      padding: 0 12px;
-      border: 1px solid rgba(0, 116, 170, .22);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .9);
-      color: var(--blue);
-      font: 800 .68rem/1 "IBM Plex Mono", monospace;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      transform: translate(-50%, calc(-50% + 142px));
-      box-shadow: 0 14px 36px rgba(43, 92, 124, .14);
+    @keyframes arrowColor {
+      0%, 100% { filter: drop-shadow(0 10px 18px rgba(0, 191, 232, .2)); }
+      50% { filter: drop-shadow(0 10px 28px rgba(30, 85, 255, .42)); }
     }
 
     .operation-stack {
@@ -479,6 +492,15 @@
       border-radius: 7px;
       background: rgba(255, 255, 255, .84);
       backdrop-filter: blur(8px);
+      animation: opFloat 4.5s ease-in-out infinite;
+    }
+
+    .op:nth-child(2) { animation-delay: .3s; }
+    .op:nth-child(3) { animation-delay: .6s; }
+
+    @keyframes opFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
 
     .op small {
@@ -742,7 +764,8 @@
       }
 
       .mesh-stage {
-        min-height: 450px;
+        min-height: 560px;
+        max-width: 760px;
       }
 
       .feature-grid,
@@ -780,35 +803,15 @@
       }
 
       .mesh-stage {
-        min-height: 430px;
+        min-height: 520px;
       }
 
       .gesture-demo {
-        inset: 24px 16px 138px;
+        inset: 28px 12px 148px;
       }
 
       .demo-cube {
-        width: 142px;
-        height: 142px;
-      }
-
-      .cube-face.front {
-        width: 106px;
-        height: 106px;
-      }
-
-      .cube-face.right {
-        left: calc(50% + 53px);
-        top: calc(50% - 53px);
-        width: 42px;
-        height: 106px;
-      }
-
-      .cube-face.top {
-        left: calc(50% - 53px);
-        top: calc(50% - 95px);
-        width: 106px;
-        height: 42px;
+        --cube-size: 106px;
       }
 
       .demo-arrow {
@@ -817,23 +820,16 @@
         font-size: 38px;
       }
 
-      .demo-arrow.up { --x: 0px; --y: -130px; }
-      .demo-arrow.right { --x: 126px; --y: -8px; }
-      .demo-arrow.down { --x: 0px; --y: 130px; }
-      .demo-arrow.left { --x: -126px; --y: -8px; }
-      .demo-arrow.diagonal { --x: 98px; --y: 104px; }
+      .demo-arrow.up { --x: 0px; --y: -158px; }
+      .demo-arrow.right { --x: 146px; --y: -14px; }
+      .demo-arrow.down { --x: 0px; --y: 158px; }
+      .demo-arrow.left { --x: -154px; --y: -14px; }
+      .demo-arrow.diagonal { --x: 112px; --y: 128px; }
 
-      .arrow-label {
-        min-height: 28px;
-        padding: 0 8px;
-        font-size: .52rem;
+      @keyframes arrowNudge {
+        0%, 100% { margin-left: 0; opacity: .58; }
+        50% { margin-left: 14px; opacity: 1; }
       }
-
-      .arrow-label.up { --x: 0px; --y: -88px; }
-      .arrow-label.right { --x: 92px; --y: 46px; }
-      .arrow-label.down { --x: 0px; --y: 90px; }
-      .arrow-label.left { --x: -94px; --y: 46px; }
-      .arrow-label.diagonal { --x: 82px; --y: 82px; }
 
       .operation-stack {
         grid-template-columns: 1fr;
@@ -907,7 +903,7 @@
           <h2>One-hand mesh modeling.</h2>
           <p class="lede">
             Select geometry. Drag from the selection. Release to apply. Gesture Mesh turns simple mouse gestures into fast
-            extrude, inset, and bevel operations inside Blender.
+            extrude, inset, and bevel operations inside Blender. No keyboard shortcuts required: just move the mouse.
           </p>
           <div class="chips" aria-label="GestureMesh feature highlights">
             <span class="chip">Extrude</span>
@@ -921,6 +917,10 @@
 
         <div class="mesh-stage" aria-label="GestureMesh direction preview">
           <div class="gesture-demo">
+            <span class="mesh-node n1" aria-hidden="true"></span>
+            <span class="mesh-node n2" aria-hidden="true"></span>
+            <span class="mesh-node n3" aria-hidden="true"></span>
+            <span class="mesh-node n4" aria-hidden="true"></span>
             <div class="demo-cube" aria-hidden="true">
               <div class="cube-face front">
                 <i></i><i></i><i></i>
@@ -943,24 +943,18 @@
             <div class="demo-arrow down"><span>➜</span></div>
             <div class="demo-arrow left"><span>➜</span></div>
             <div class="demo-arrow diagonal"><span>➜</span></div>
-            <div class="arrow-label up">Up: Extrude</div>
-            <div class="arrow-label right">Right: Individual Inset</div>
-            <div class="arrow-label down">Down: Extrude</div>
-            <div class="arrow-label left">Left: Region Inset</div>
-            <div class="arrow-label diagonal">Diagonal: Bevel</div>
-            <div class="value-tag">Live Preview</div>
           </div>
           <div class="operation-stack">
             <div class="op">
-              <small>Up / Down</small>
+              <small>Mouse drag up / down</small>
               <strong>Extrude</strong>
             </div>
             <div class="op">
-              <small>Left / Right</small>
+              <small>Mouse drag left / right</small>
               <strong>Inset</strong>
             </div>
             <div class="op">
-              <small>Diagonal</small>
+              <small>Mouse drag diagonal</small>
               <strong>Bevel</strong>
             </div>
           </div>
@@ -1103,6 +1097,62 @@
       </div>
     </section>
 
+    <section class="section">
+      <div class="wrap">
+        <p class="label">Next Release</p>
+        <h2>GestureMesh V2 — Gesture Modeling, Evolved</h2>
+        <p class="lede">GestureMesh V2 takes gesture-based modeling to the next level.</p>
+        <p class="lede">
+          Model directly in the viewport using fast, intuitive mouse gestures — now with an expanded toolset,
+          smarter interactions, and more control over every operation.
+        </p>
+        <h3>What's New in V2</h3>
+        <div class="feature-grid">
+          <article class="feature">
+            <h3>Gesture Chains</h3>
+            <p>Combine multiple modeling operations in one continuous gesture workflow.</p>
+          </article>
+          <article class="feature">
+            <h3>Gesture Cut</h3>
+            <p>Draw directly on your mesh to create fast cuts and new shapes.</p>
+          </article>
+          <article class="feature">
+            <h3>Loop Cut Gestures</h3>
+            <p>Add and control loop cuts without interrupting your workflow.</p>
+          </article>
+          <article class="feature">
+            <h3>Transform Gestures</h3>
+            <p>Move, rotate and scale geometry through intuitive mouse movements.</p>
+          </article>
+          <article class="feature">
+            <h3>Smart Extrude</h3>
+            <p>Extrude geometry naturally following the direction of your gesture.</p>
+          </article>
+          <article class="feature">
+            <h3>Gesture Macros</h3>
+            <p>Create and save custom gesture-driven modeling sequences.</p>
+          </article>
+          <article class="feature">
+            <h3>Interactive HUD</h3>
+            <p>See distance, bevel width, segments and other parameters directly while modeling.</p>
+          </article>
+          <article class="feature">
+            <h3>Precision Controls</h3>
+            <p>Use modifiers for snapping, fine adjustments and alternate gesture modes.</p>
+          </article>
+          <article class="feature">
+            <h3>Improved Gesture Recognition</h3>
+            <p>Faster, smoother and more reliable gesture detection.</p>
+          </article>
+        </div>
+        <div class="panel">
+          <h3>One Gesture. Multiple Actions.</h3>
+          <p>GestureMesh V2 is designed to reduce clicks, menus and repetitive operations.</p>
+          <p class="mono">Draw. Gesture. Model.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="cta" id="support">
       <div class="wrap">
         <p class="label">GestureMesh</p>
@@ -1120,7 +1170,7 @@
   </main>
 
   <footer>
-    <div class="wrap">GestureMesh / NoiseBee / Blender Edit Mode Add-on</div>
+    <div class="wrap">GestureMesh / NoiseBee /</div>
   </footer>
 </body>
 </html>
